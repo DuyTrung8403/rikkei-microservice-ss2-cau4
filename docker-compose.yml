@@ -1,18 +1,39 @@
-version: '3.8'                          # 1. Phiên bản cú pháp của Docker Compose
+version: '3.8'
 
-services:                               # 2. Khai báo danh sách các ứng dụng/container cần chạy
-  order-service:                        # 3. Tên định danh của service này trong file compose
-    build:                              # 4. Hướng dẫn Docker cách tự đóng gói mã nguồn thành Image
-      context: ./order-service          #    -> Thư mục chứa mã nguồn & Dockerfile để build
-    container_name: order-service       # 5. Tên hiển thị của container trên Docker Desktop (cột Name)
-    ports:                              # 6. Mở cổng kết nối giữa Máy thật <-> Container
-      - "8085:8085"                     #    -> [Cổng máy bạn]:[Cổng bên trong container]
-    environment:                        # 7. Truyền biến môi trường vào ứng dụng Spring Boot
+services:
+  order-service:
+    build:
+      context: ./order-service
+    container_name: order-service
+    ports:
+      - "8085:8085"
+    environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://shared-postgres:5432/order_service_db
-    networks:                           # 8. Chỉ định container này cắm vào mạng ảo nào
+    networks:
       - ss2_e-learning-net
 
-networks:                               # 9. Khai báo các mạng ảo
+  user-service:
+    build:
+      context: ./user-service
+    container_name: homework-user-service
+    ports:
+      - "8086:8086"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://shared-postgres:5432/user_db
+    networks:
+      - ss2_e-learning-net
+
+  inventory-service:
+    build:
+      context: ./inventory-service
+    container_name: homework-inventory-service
+    ports:
+      - "8087:8087"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://shared-postgres:5432/inventory_db
+    networks:
+      - ss2_e-learning-net
+
+networks:
   ss2_e-learning-net:
-    external: true                      # 10. THUỘC TÍNH THEN CHỐT: Báo cho Docker biết mạng này
-    #     ĐÃ TỒN TẠI SẴN Ở BÊN NGOÀI, KHÔNG TỰ TẠO MỚI!
+    external: true
